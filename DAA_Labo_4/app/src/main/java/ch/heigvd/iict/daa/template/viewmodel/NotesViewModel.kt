@@ -1,34 +1,31 @@
+/*
+ * DAA - Laboratoire 4
+ * Auteurs : Yann Mermoud, Julien Gorgerat, Mauro Dos Santos
+ */
 package ch.heigvd.iict.daa.template.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import ch.heigvd.iict.daa.template.data.NotesRepository
 import ch.heigvd.iict.daa.template.models.NoteAndSchedule
 import ch.heigvd.iict.daa.template.models.SortOption
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel partagé par MainActivity, NotesFragment et ControlsFragment.
+ * Il ne référence aucun élément du cycle de vie Android (Activity, Fragment, View, Context).
+ */
 class NotesViewModel(private val repository: NotesRepository) : ViewModel() {
     val allNotes: LiveData<List<NoteAndSchedule>> = repository.allNotes
     val countNotes: LiveData<Int> = repository.countNotes
 
-    private val sortOption = MutableLiveData(SortOption.CREATION)
-    private var latestNotes: List<NoteAndSchedule> = emptyList()
+    // Option de tri persistée (DataStore), exposée en LiveData pour l'interface
+    val sortOption: LiveData<SortOption> = repository.sortOption.asLiveData()
 
-    val sortedNotes: LiveData<List<NoteAndSchedule>> = MediatorLiveData<List<NoteAndSchedule>>().apply {
-        addSource(repository.allNotes) { notes ->
-            latestNotes = notes
-            value = sortNotes(notes, sortOption.value ?: SortOption.CREATION)
-        }
-        addSource(sortOption) { option ->
-            value = sortNotes(latestNotes, option ?: SortOption.CREATION)
-        }
-    }
-
-    fun sortNotes(option: SortOption) {
-        sortOption.value = option
+    fun setSortOption(option: SortOption) {
+        viewModelScope.launch { repository.setSortOption(option) }
     }
 
     fun generateANote() {
@@ -38,19 +35,4 @@ class NotesViewModel(private val repository: NotesRepository) : ViewModel() {
     fun deleteAllNote() {
         viewModelScope.launch { repository.deleteAll() }
     }
-
-    private fun sortNotes(
-        notes: List<NoteAndSchedule>,
-        option: SortOption
-    ): List<NoteAndSchedule> =
-        when (option) {
-            SortOption.CREATION ->
-                notes.sortedByDescending { it.note.creationDate.timeInMillis }
-            SortOption.SCHEDULE ->
-                notes.sortedWith(
-                    compareBy<NoteAndSchedule> {
-                        it.schedule?.date?.timeInMillis ?: Long.MAX_VALUE
-                    }.thenByDescending { it.note.creationDate.timeInMillis }
-                )
-        }
 }
