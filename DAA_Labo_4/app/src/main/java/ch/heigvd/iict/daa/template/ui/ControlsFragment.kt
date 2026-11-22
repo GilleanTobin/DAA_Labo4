@@ -1,3 +1,7 @@
+/*
+ * DAA - Laboratoire 4
+ * Auteurs : Yann Mermoud, Julien Gorgerat, Mauro Dos Santos
+ */
 package ch.heigvd.iict.daa.template.ui
 
 import android.os.Bundle
@@ -13,6 +17,10 @@ import ch.heigvd.iict.daa.template.R
 import ch.heigvd.iict.daa.template.viewmodel.NotesViewModel
 import ch.heigvd.iict.daa.template.viewmodel.NotesViewModelFactory
 
+/**
+ * Fragment de contrôle (tablette uniquement) : compteur de notes et boutons
+ * remplaçant les entrées "générer" et "supprimer" du menu.
+ */
 class ControlsFragment : Fragment() {
     private val viewModel: NotesViewModel by activityViewModels {
         NotesViewModelFactory((requireActivity().application as NotesApplication).repository)
@@ -32,6 +40,7 @@ class ControlsFragment : Fragment() {
         view.findViewById<Button>(R.id.delete_notes).setOnClickListener {
             viewModel.deleteAllNote()
         }
+        // Le compteur est mis à jour automatiquement par Room à chaque modification
         viewModel.countNotes.observe(viewLifecycleOwner) {
             count.text = getString(R.string.note_count, it)
         }

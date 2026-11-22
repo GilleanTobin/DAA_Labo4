@@ -1,3 +1,7 @@
+/*
+ * DAA - Laboratoire 4
+ * Auteurs : Yann Mermoud, Julien Gorgerat, Mauro Dos Santos
+ */
 package ch.heigvd.iict.daa.template.ui
 
 import android.os.Bundle
@@ -13,11 +17,12 @@ import ch.heigvd.iict.daa.template.R
 import ch.heigvd.iict.daa.template.viewmodel.NotesViewModel
 import ch.heigvd.iict.daa.template.viewmodel.NotesViewModelFactory
 
+/** Fragment affichant la liste des notes dans une RecyclerView. */
 class NotesFragment : Fragment() {
+    // activityViewModels : même instance que l'Activité et ControlsFragment
     private val viewModel: NotesViewModel by activityViewModels {
         NotesViewModelFactory((requireActivity().application as NotesApplication).repository)
     }
-    private val adapter = NotesAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,10 +31,13 @@ class NotesFragment : Fragment() {
     ): View = inflater.inflate(R.layout.fragment_notes, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // Adapter créé avec la vue pour ne pas garder une référence vers une ancienne RecyclerView
+        val adapter = NotesAdapter()
         val recycler = view.findViewById<RecyclerView>(R.id.notes_recycler)
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = adapter
 
-        viewModel.sortedNotes.observe(viewLifecycleOwner) { adapter.submit(it) }
+        viewModel.allNotes.observe(viewLifecycleOwner) { adapter.setNotes(it) }
+        viewModel.sortOption.observe(viewLifecycleOwner) { adapter.setSortOption(it) }
     }
 }

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">DAA-Lab4</string>
-    <string name="welcome">Bienvenue dans l’application de notes</string>
 
     <string name="sort_creation">Trier par date de création</string>
     <string name="sort_schedule">Trier par date prévue</string>
@@ -10,5 +9,4 @@
     <string name="note_count">Nombre de notes : %1$d</string>
     <string name="creation_date">Créée le %1$s</string>
     <string name="scheduled_date">Prévue le %1$s</string>
-    <string name="no_schedule">Aucun horaire prévu</string>
 </resources>

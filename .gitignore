@@ -1,0 +1,7 @@
+# Android Studio / Gradle
+.idea/caches/
+.idea/workspace.xml
+build/
+.gradle/
+local.properties
+*.apk
