@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sort_menu"
+        android:icon="@drawable/sort"
+        android:title="@string/sort_options"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_sort_creation"
+                android:title="@string/sort_creation" />
+            <item
+                android:id="@+id/action_sort_schedule"
+                android:title="@string/sort_schedule" />
+        </menu>
+    </item>
+    <item android:id="@+id/action_generate" android:title="@string/generate_note" app:showAsAction="never" />
+    <item android:id="@+id/action_delete" android:title="@string/delete_all" app:showAsAction="never" />
+</menu>
